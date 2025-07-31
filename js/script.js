@@ -1,6 +1,6 @@
 // Variables y arrays
 const planes = ["Principiante", "Intermedio", "Avanzado"];
-let nombre, edad, objetivo, opcion, plan; // plan ahora es global
+let nombre, edad, objetivo, opcion, plan;
 
 // Función para pedir datos
 function pedir_datos() {
@@ -12,7 +12,6 @@ function pedir_datos() {
 
 }
 
-// Función para asignar un plan de entrenamiento
 function asignar_plan() {
     if (opcion === 1) {
         plan = planes[0];
@@ -22,12 +21,12 @@ function asignar_plan() {
         plan = planes[2];
     } else {
         alert("Opción inválida. Intenta de nuevo.");
-        return;
+        return false;
     }
 
     alert(`Hola ${nombre}, tu plan elegido es: ${plan}`);
+    return true;
 }
-
 // Función para mostrar ejercicios de la semana
 function mostrar_rutina() {
     let ejercicios = [];
@@ -66,18 +65,19 @@ function mostrar_rutina() {
 
     console.log(`Rutina para el plan ${plan}:`);
     for (let i = 0; i < dias; i++) {
-        console.log(`Día ${i + 1}: Grupo muscular: ${grupos[i]} | Ejercicios: ${ejercicios[i]}`);
+        console.log(`Día ${i + 1}: Grupo muscular: ${grupos_musculares[i]} | Ejercicios: ${ejercicios[i]}`);
     }
 
     alert(`Tu plan ${plan} es de ${dias} días por semana. Revisa la consola para ver la rutina completa.`);
 }
 
-// Codigo principal
+// Código principal
 if (confirm("¿Quieres comenzar el simulador de gimnasio?")) {
     pedir_datos();
-    asignar_plan();
-    mostrar_rutina();
-    alert("¡Gracias por usar el simulador!");
+    if (asignar_plan()) { 
+        mostrar_rutina();
+        alert("¡Gracias por usar el simulador!");
+    }
 } else {
     alert("Has cancelado el simulador.");
 }
