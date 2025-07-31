@@ -2,31 +2,50 @@
 const planes = ["Principiante", "Intermedio", "Avanzado"];
 let nombre, edad, objetivo, opcion, plan;
 
+
 // Función para pedir datos
 function pedir_datos() {
     nombre = prompt("Ingresa tu nombre:");
     edad = parseInt(prompt("Ingresa tu edad:"));
+
+    // Validación para la edad
+    while (isNaN(edad) || edad <= 0) {
+        alert("Por favor, ingresa una edad válida.");
+        edad = parseInt(prompt("Ingresa tu edad:"));
+    }
+
     objetivo = prompt("¿Cuál es tu objetivo?: ");
     opcion = parseInt(prompt("Elige tu plan:\n1 - Principiante\n2 - Intermedio\n3 - Avanzado"));
-    console.log(`Datos ingresados: Nombre: ${nombre}, Edad: ${edad}, Objetivo: ${objetivo}`);
+    console.log(`Información del cliente: Nombre: ${nombre}, Edad: ${edad}, Objetivo: ${objetivo}`);
 
 }
 
+
+// Función para asignar un plan de entrenamiento
 function asignar_plan() {
-    if (opcion === 1) {
-        plan = planes[0];
-    } else if (opcion === 2) {
-        plan = planes[1];
-    } else if (opcion === 3) {
-        plan = planes[2];
-    } else {
-        alert("Opción inválida. Intenta de nuevo.");
-        return false;
-    }
+    let opcionValida = false;
+
+    do {
+        if (opcion === 1) {
+            plan = planes[0];
+            opcionValida = true;
+        } else if (opcion === 2) {
+            plan = planes[1];
+            opcionValida = true;
+        } else if (opcion === 3) {
+            plan = planes[2];
+            opcionValida = true;
+        } else {
+            alert("Opción inválida. Intenta de nuevo.");
+            opcion = parseInt(prompt("Elige tu plan:\n1 - Principiante\n2 - Intermedio\n3 - Avanzado"));
+        }
+    } while (!opcionValida);
 
     alert(`Hola ${nombre}, tu plan elegido es: ${plan}`);
     return true;
 }
+
+
 // Función para mostrar ejercicios de la semana
 function mostrar_rutina() {
     let ejercicios = [];
@@ -74,7 +93,7 @@ function mostrar_rutina() {
 // Código principal
 if (confirm("¿Quieres comenzar el simulador de gimnasio?")) {
     pedir_datos();
-    if (asignar_plan()) { 
+    if (asignar_plan()) {
         mostrar_rutina();
         alert("¡Gracias por usar el simulador!");
     }
