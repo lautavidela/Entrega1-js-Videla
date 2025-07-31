@@ -1,44 +1,82 @@
 // Variables y arrays
 const planes = ["Principiante", "Intermedio", "Avanzado"];
-let nombre, edad, objetivo;
+let nombre, edad, objetivo, opcion, plan; // plan ahora es global
 
 // Función para pedir datos
-function pedirDatos() {
+function pedir_datos() {
     nombre = prompt("Ingresa tu nombre:");
     edad = parseInt(prompt("Ingresa tu edad:"));
-    objetivo = prompt("¿Cuál es tu objetivo? (Fuerza / Resistencia / Pérdida de peso)").toLowerCase();
-    console.log("Datos ingresados:", nombre, edad, objetivo);
+    objetivo = prompt("¿Cuál es tu objetivo?: ");
+    opcion = parseInt(prompt("Elige tu plan:\n1 - Principiante\n2 - Intermedio\n3 - Avanzado"));
+    console.log(`Datos ingresados: Nombre: ${nombre}, Edad: ${edad}, Objetivo: ${objetivo}`);
+
 }
 
-// Función para asignar plan
-function asignarPlan() {
-    let plan;
-    if (edad < 18) {
+// Función para asignar un plan de entrenamiento
+function asignar_plan() {
+    if (opcion === 1) {
         plan = planes[0];
-    } else if (edad <= 40) {
+    } else if (opcion === 2) {
         plan = planes[1];
-    } else {
+    } else if (opcion === 3) {
         plan = planes[2];
+    } else {
+        alert("Opción inválida. Intenta de nuevo.");
+        return;
     }
-    alert(`Hola ${nombre}, tu plan asignado es: ${plan}`);
-    return plan;
+
+    alert(`Hola ${nombre}, tu plan elegido es: ${plan}`);
 }
 
 // Función para mostrar ejercicios de la semana
-function mostrarRutina(plan) {
-    const ejercicios = ["Sentadillas", "Flexiones", "Abdominales", "Cardio"];
-    console.log(`Rutina para el plan ${plan}:`);
-    for (let i = 0; i < ejercicios.length; i++) {
-        console.log(`Día ${i + 1}: ${ejercicios[i]}`);
+function mostrar_rutina() {
+    let ejercicios = [];
+    let grupos_musculares = [];
+    let dias = 0;
+
+    if (plan === "Principiante") {
+        grupos_musculares = ["Tren Superior", "Tren Inferior"];
+        ejercicios = [
+            "Flexiones | Press de hombros | Remo con bandas",
+            "Sentadillas | Zancadas | Puente de glúteos"
+        ];
+        dias = 2;
+
+    } else if (plan === "Intermedio") {
+        grupos_musculares = ["Pecho/Tríceps/Hombro", "Piernas", "Espalda/Bíceps"];
+        ejercicios = [
+            "Flexiones | Banco plano con mancuernas | Banco plano con barra",
+            "Sentadillas | Peso muerto | Prensa de piernas",
+            "Dominadas | Remo con barra | Curl bíceps"
+        ];
+        dias = 3;
+
+    } else if (plan === "Avanzado") {
+        grupos_musculares = ["Pecho", "Espalda", "Piernas", "Brazos", "Hombros", "Cardio"];
+        ejercicios = [
+            "Press banca inclinado | Aperturas | Fondos",
+            "Dominadas | Remo en máquina | Pullover",
+            "Sentadillas | Peso muerto | Zancadas búlgaras",
+            "Curl bíceps | Extensiones tríceps | Martillo",
+            "Press militar | Elevaciones laterales | Pájaro",
+            "Cinta de correr | Bicicleta | HIIT"
+        ];
+        dias = 6;
     }
-    alert("Revisa la consola para ver tu rutina semanal.");
+
+    console.log(`Rutina para el plan ${plan}:`);
+    for (let i = 0; i < dias; i++) {
+        console.log(`Día ${i + 1}: Grupo muscular: ${grupos[i]} | Ejercicios: ${ejercicios[i]}`);
+    }
+
+    alert(`Tu plan ${plan} es de ${dias} días por semana. Revisa la consola para ver la rutina completa.`);
 }
 
-// Flujo principal
+// Codigo principal
 if (confirm("¿Quieres comenzar el simulador de gimnasio?")) {
-    pedirDatos();
-    const plan = asignarPlan();
-    mostrarRutina(plan);
+    pedir_datos();
+    asignar_plan();
+    mostrar_rutina();
     alert("¡Gracias por usar el simulador!");
 } else {
     alert("Has cancelado el simulador.");
