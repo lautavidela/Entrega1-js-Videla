@@ -67,7 +67,7 @@ formulario.addEventListener("submit", (e) => {
 // Crear usuario
 const usuario = new Usuario(nombre, edad, objetivo, plan);
 
-// Guardar en localStorage como array evitando duplicados
+// Guardar en localStorage
 let usuariosGuardados = JSON.parse(localStorage.getItem("usuarios")) || [];
 
 let existe = false;
@@ -88,6 +88,6 @@ if (!existe) {
     localStorage.setItem("usuarios", JSON.stringify(usuariosGuardados));
 }
 
-// Mostrar solo la rutina del usuario recién generado
+
 mostrarRutina(usuario);
 });
