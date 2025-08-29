@@ -1,19 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Simulador de Gimnasio</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <h1>Simulador de Planes de Gimnasio</h1>
-    <p>
-        Este simulador permite que el usuario ingrese sus datos y objetivo físico 
-        para asignarle un plan de entrenamiento adaptado a su nivel.
-        La interacción se realiza completamente con la consola y cuadros de diálogo.
-    </p>
-    <p>Estudiante: Lautaro Videla</p>
-    <script src="./js/script.js "></script>
+    <h1>Simulador de Gimnasio</h1>
+    <p class="subtitulo">Completa el formulario y genera tu rutina personalizada.</p>
 
+    <form id="formulario">
+        <label>Nombre: <input type="text" id="nombre" required></label><br>
+        <label>Edad: <input type="text" id="edad" required></label><br>
+        <label>Objetivo: <input type="text" id="objetivo" required></label><br>
+        <label>Plan:
+            <select id="opcion" required>
+                <option value="1">Principiante</option>
+                <option value="2">Intermedio</option>
+                <option value="3">Avanzado</option>
+            </select>
+    </label><br>
+    <button type="submit">Generar Rutina</button>
+    </form>
+
+    <div id="resultado"></div>
+
+    <script src="js/script.js"></script>
 </body>
 </html>

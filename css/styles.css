@@ -1,0 +1,33 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: #f9f9f9;
+}
+
+h1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #136fcb;
+}
+
+.subtitulo {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    font-weight: bold;
+}
+
+#formulario {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#resultado {
+    margin-top: 20px;
+    padding: 10px;
+    background: #b3d3ed;
+    border-radius: 8px;
+}
