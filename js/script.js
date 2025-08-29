@@ -31,6 +31,15 @@ const rutinas = {
 const formulario = document.getElementById("formulario");
 const resultado = document.getElementById("resultado");
 
+// Función para mostrar la rutina de un usuario
+function mostrarRutina(usuario) {
+    let rutinaHTML = `<h2>Rutina de ${usuario.nombre} (${usuario.plan})</h2>`;
+    rutinas[usuario.plan].forEach((dia, i) => {
+        rutinaHTML += `<p><b>Día ${i + 1}</b>: ${dia.grupo} → ${dia.ejercicios}</p>`;
+    });
+    resultado.innerHTML = rutinaHTML;
+}
+
 // Evento submit
 formulario.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -47,32 +56,38 @@ formulario.addEventListener("submit", (e) => {
         return;
     }
 
-
-    // Asignamos plan según opción
+    // Validar plan
     const planes = ["Principiante", "Intermedio", "Avanzado"];
+    if (opcion < 1 || opcion > 3) {
+        resultado.innerHTML = "<p style='color:red;'>Seleccione un plan válido.</p>";
+        return;
+    }
     const plan = planes[opcion - 1];
 
-    // Creamos el usuario y lo guardamos en localStorage
-    const usuario = new Usuario(nombre, edad, objetivo, plan);
-    localStorage.setItem("usuario", JSON.stringify(usuario));
+// Crear usuario
+const usuario = new Usuario(nombre, edad, objetivo, plan);
 
-    // Mostramos resultados en el DOM
-    mostrarRutina(usuario);
-});
+// Guardar en localStorage como array evitando duplicados
+let usuariosGuardados = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-// Función para mostrar la rutina
-function mostrarRutina(usuario) {
-    let rutinaHTML = `<h2>Rutina de ${usuario.nombre} (${usuario.plan})</h2>`;
-    rutinas[usuario.plan].forEach((dia, index) => {
-        rutinaHTML += `<p><b>Día ${index + 1}</b>: ${dia.grupo} → ${dia.ejercicios}</p>`;
-    });
-    resultado.innerHTML = rutinaHTML;
+let existe = false;
+for (let i = 0; i < usuariosGuardados.length; i++) {
+    if (
+        usuariosGuardados[i].nombre === usuario.nombre &&
+        usuariosGuardados[i].edad === usuario.edad &&
+        usuariosGuardados[i].objetivo === usuario.objetivo &&
+        usuariosGuardados[i].plan === usuario.plan
+    ) {
+        existe = true;
+        break;
+    }
 }
 
-// Si ya existe usuario en LocalStorage, mostrarlo al cargar
-window.addEventListener("load", () => {
-    const usuarioGuardado = JSON.parse(localStorage.getItem("usuario"));
-    if (usuarioGuardado) {
-        mostrarRutina(usuarioGuardado);
-    }
+if (!existe) {
+    usuariosGuardados.push(usuario);
+    localStorage.setItem("usuarios", JSON.stringify(usuariosGuardados));
+}
+
+// Mostrar solo la rutina del usuario recién generado
+mostrarRutina(usuario);
 });
