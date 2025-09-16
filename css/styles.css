@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     padding: 20px;
-    background: #f9f9f9;
+    background: #cae5ff;
 }
 
 h1 {
@@ -23,11 +23,12 @@ h1 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 10px;
 }
 
 #resultado {
     margin-top: 20px;
     padding: 10px;
-    background: #b3d3ed;
+    background: #599adb;
     border-radius: 8px;
 }

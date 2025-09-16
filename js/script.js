@@ -1,93 +1,104 @@
-// Constructor para crear un Usuario
-function Usuario(nombre, edad, objetivo, plan) {
+
+function Usuario(nombre, edad, objetivo) {
     this.nombre = nombre;
     this.edad = edad;
     this.objetivo = objetivo;
-    this.plan = plan;
 }
 
-// Rutinas predefinidas
-const rutinas = {
-    "Principiante": [
-        { grupo: "Tren Superior", ejercicios: "Flexiones | Press hombros | Remo bandas" },
-        { grupo: "Tren Inferior", ejercicios: "Sentadillas | Zancadas | Puente glúteos" }
-    ],
-    "Intermedio": [
-        { grupo: "Pecho/Tríceps/Hombro", ejercicios: "Flexiones | Banco plano | Mancuernas" },
-        { grupo: "Piernas", ejercicios: "Sentadillas | Peso muerto | Prensa" },
-        { grupo: "Espalda/Bíceps", ejercicios: "Dominadas | Remo barra | Curl bíceps" }
-    ],
-    "Avanzado": [
-        { grupo: "Pecho", ejercicios: "Press inclinado | Aperturas | Fondos" },
-        { grupo: "Espalda", ejercicios: "Dominadas | Remo máquina | Pullover" },
-        { grupo: "Piernas", ejercicios: "Sentadillas | Peso muerto | Zancadas búlgaras" },
-        { grupo: "Brazos", ejercicios: "Curl bíceps | Extensión tríceps | Martillo" },
-        { grupo: "Hombros", ejercicios: "Press militar | Elevaciones laterales | Pájaro" },
-        { grupo: "Cardio", ejercicios: "Cinta correr | Bicicleta | HIIT" }
-    ]
-};
+async function obtenerEjerciciosAPI(objetivo) {
 
-// Capturamos el formulario
-const formulario = document.getElementById("formulario");
-const resultado = document.getElementById("resultado");
+    const apiKey = "/ZwOhp760q1svSmExYPIFw==SOn16RgcMMldnhMr";
+    const url = `https://api.api-ninjas.com/v1/exercises?muscle=${encodeURIComponent(
+        objetivo
+    )}`;
 
-// Función para mostrar la rutina de un usuario
-function mostrarRutina(usuario) {
-    let rutinaHTML = `<h2>Rutina de ${usuario.nombre} (${usuario.plan})</h2>`;
-    rutinas[usuario.plan].forEach((dia, i) => {
-        rutinaHTML += `<p><b>Día ${i + 1}</b>: ${dia.grupo} → ${dia.ejercicios}</p>`;
+    const res = await fetch(url, {
+        headers: { "X-Api-Key": apiKey },
     });
-    resultado.innerHTML = rutinaHTML;
+    if (!res.ok) throw new Error("Error API " + res.status);
+    return await res.json();
 }
 
-// Evento submit
-formulario.addEventListener("submit", (e) => {
+function mostrarRutina(usuario, ejercicios) {
+    const resultado = document.getElementById("resultado");
+
+    let html = `<h2>Rutina para ${usuario.nombre}</h2>`;
+    html += `<p>Objetivo: ${usuario.objetivo}</p><ul>`;
+
+
+    const cantidadFija = 5;
+
+    ejercicios.slice(0, cantidadFija).forEach((ej, i) => {
+        html += `<li><b>${i + 1
+            }.</b> ${ej.name} — ${ej.muscle} (${ej.difficulty})</li>`;
+    });
+
+    html += `</ul>`;
+    resultado.innerHTML = html;
+}
+
+document.getElementById("formulario").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // Obtenemos valores
-    const nombre = document.getElementById("nombre").value;
-    const edad = parseInt(document.getElementById("edad").value);
-    const objetivo = document.getElementById("objetivo").value;
-    const opcion = parseInt(document.getElementById("opcion").value);
+    const nombre = document.getElementById("nombre").value.trim();
+    const edad = parseInt(document.getElementById("edad").value.trim());
+    const objetivo = document.getElementById("objetivo").value.trim();
 
-    // Validación de edad
+    if (!nombre) {
+        Swal.fire("Error", "Ingresa tu nombre", "error");
+        return;
+    }
     if (isNaN(edad) || edad <= 0) {
-        resultado.innerHTML = "<p style='color:red;'>Por favor, ingrese una edad válida.</p>";
+        Swal.fire("Error", "Edad inválida", "error");
+        return;
+    }
+    if (!objetivo) {
+        Swal.fire("Error", "Ingresa un objetivo/músculo", "error");
         return;
     }
 
-    // Validar plan
-    const planes = ["Principiante", "Intermedio", "Avanzado"];
-    if (opcion < 1 || opcion > 3) {
-        resultado.innerHTML = "<p style='color:red;'>Seleccione un plan válido.</p>";
-        return;
+    const usuario = new Usuario(nombre, edad, objetivo);
+
+    // Guardar en localStorage
+    let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+    usuarios.push(usuario);
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+    try {
+        const ejercicios = await obtenerEjerciciosAPI(objetivo);
+        if (ejercicios.length === 0) {
+            Swal.fire({
+                title: 'Músculo no encontrado',
+                text: `No se encontraron ejercicios para "${objetivo}". Recuerda que la búsqueda debe ser en inglés (Ej: chest, biceps, glutes).`,
+                icon: 'warning' // Un ícono de advertencia es ideal aquí
+            });
+            return;
+        }
+        const cantidadFija = 5;
+
+        Swal.fire({
+            title: "¡Rutina generada!",
+            html: `<p>Hola ${nombre}, aquí tienes algunos ejercicios:</p>
+    <ul>${ejercicios
+                    .slice(0, cantidadFija)
+                    .map((e) => `<li>${e.name}</li>`)
+                    .join("")}</ul>`,
+            icon: "success",
+        });
+
+        mostrarRutina(usuario, ejercicios);
+    } catch (err) {
+        Swal.fire("Error", "No se pudo obtener la rutina de la API", "error");
+        console.error(err);
     }
-    const plan = planes[opcion - 1];
+});
 
-// Crear usuario
-const usuario = new Usuario(nombre, edad, objetivo, plan);
-
-// Guardar en localStorage
-let usuariosGuardados = JSON.parse(localStorage.getItem("usuarios")) || [];
-
-let existe = false;
-for (let i = 0; i < usuariosGuardados.length; i++) {
-    if (
-        usuariosGuardados[i].nombre === usuario.nombre &&
-        usuariosGuardados[i].edad === usuario.edad &&
-        usuariosGuardados[i].objetivo === usuario.objetivo &&
-        usuariosGuardados[i].plan === usuario.plan
-    ) {
-        existe = true;
-        break;
+window.addEventListener("DOMContentLoaded", () => {
+    const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+    if (usuarios.length > 0) {
+        const ultimo = usuarios[usuarios.length - 1];
+        document.getElementById(
+            "resultado"
+        ).innerHTML = `<p>Último usuario guardado: ${ultimo.nombre}, objetivo: ${ultimo.objetivo}</p>`;
     }
-}
-
-if (!existe) {
-    usuariosGuardados.push(usuario);
-    localStorage.setItem("usuarios", JSON.stringify(usuariosGuardados));
-}
-
-
-mostrarRutina(usuario);
 });
