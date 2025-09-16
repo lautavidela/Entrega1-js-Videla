@@ -70,7 +70,7 @@ document.getElementById("formulario").addEventListener("submit", async (e) => {
             Swal.fire({
                 title: 'Músculo no encontrado',
                 text: `No se encontraron ejercicios para "${objetivo}". Recuerda que la búsqueda debe ser en inglés (Ej: chest, biceps, glutes).`,
-                icon: 'warning' // Un ícono de advertencia es ideal aquí
+                icon: 'warning'
             });
             return;
         }
